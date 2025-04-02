@@ -4,6 +4,7 @@
 2. Ajouter au NSG HTTP/HTTPS
 3. Refresh l'IP DNS https://www.duckdns.org/domains
 4. Update IP VM dans le .ini
-5. ansible-playbook -i inventory.ini docker.yml
-6. ansible-playbook -i inventory.ini server.yml
-7. attendre une etternite  
+5. Update IP dans nginx default conf
+6. ansible-playbook -i inventory.ini docker.yml
+7. ansible-playbook -i inventory.ini server.yml
+8. attendre une etternite  

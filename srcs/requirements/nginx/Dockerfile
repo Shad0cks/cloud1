@@ -9,5 +9,6 @@ EXPOSE 443
 RUN     openssl req -x509 -nodes -days 365 -newkey rsa:4096 -keyout /etc/ssl/private/nginx.key -out /etc/ssl/certs/nginx.crt -subj "/CN=siteadmin.duckdns.org"
 
 COPY	./conf/nginx.conf /etc/nginx/conf.d
+COPY	./conf/nginx-default.conf /etc/nginx/sites-enabled/default
 
 CMD ["nginx", "-g", "daemon off;"]
