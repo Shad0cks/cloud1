@@ -86,8 +86,8 @@ define( 'WP_DEBUG', false );
 	
 // define('WP_ALLOW_REPAIR', true);
 
-// define('WP_HOME','https://acerdan.42.fr');
-// define('WP_SITEURL','https://acerdan.42.fr');
+define('WP_HOME','https://siteadmin.duckdns.org');
+define('WP_SITEURL','https://siteadmin.duckdns.org');
 
 /* That's all, stop editing! Happy publishing. */
 

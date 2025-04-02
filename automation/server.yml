@@ -1,0 +1,57 @@
+- name: Déploiement d'Inception sur une VM Azure
+  hosts: inception
+  become: true
+  tasks:
+    - name: Ajouter l'utilisateur au groupe Docker
+      user:
+        name: pdeshaye
+        groups: docker
+        append: yes
+
+    - name: Créer le dossier de déploiement
+      file:
+        path: /home/pdeshaye/srcs
+        state: directory
+        owner: pdeshaye
+        group: pdeshaye
+        mode: '0755'
+
+    - name: Créer le dossier de stockage
+      file:
+        path: /home/pdeshaye/data
+        state: directory
+        owner: pdeshaye
+        group: pdeshaye
+        mode: '0755'
+
+    - name: Créer le dossier de stockage database
+      file:
+        path: /home/pdeshaye/data/database
+        state: directory
+        owner: pdeshaye
+        group: pdeshaye
+        mode: '0755'
+
+    - name: Créer le dossier de stockage wordpress
+      file:
+        path: /home/pdeshaye/data/wordpress
+        state: directory
+        owner: pdeshaye
+        group: pdeshaye
+        mode: '0755'
+
+
+    - name: Copier le projet ft_inception sur le serveur
+      synchronize:
+        src: ../srcs/
+        dest: /home/pdeshaye/srcs
+        recursive: yes
+        rsync_opts:
+          - "--exclude=.git"
+
+
+    - name: Démarrer les containers
+      command:
+        cmd: docker compose -f docker-compose.yml up -d --build
+        chdir: /home/pdeshaye/srcs
+

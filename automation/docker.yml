@@ -1,0 +1,74 @@
+- name: Installer Docker et Docker Compose
+  hosts: inception
+  become: true  # Exécute en mode super-utilisateur
+  tasks:
+  
+    - name: Mettre à jour les paquets
+      apt:
+        update_cache: yes
+        upgrade: yes
+
+    - name: Installer les dépendances pour Docker
+      apt:
+        name:
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
+        state: present
+
+    - name: Ajouter la clé GPG officielle de Docker
+      shell: |
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+      args:
+        creates: /usr/share/keyrings/docker-archive-keyring.gpg
+
+    - name: Ajouter le dépôt Docker officiel
+      shell: |
+        echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+      args:
+        creates: /etc/apt/sources.list.d/docker.list
+
+    - name: Mettre à jour les paquets après ajout du repo Docker
+      apt:
+        update_cache: yes
+
+    - name: Installer Docker et Docker Compose
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-compose-plugin
+        state: present
+
+    - name: Ajouter l'utilisateur au groupe Docker
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+
+    - name: Activer et démarrer Docker
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
+
+    - name: Vérifier l'installation de Docker
+      command: docker --version
+      register: docker_version
+      changed_when: false
+
+    - name: Afficher la version de Docker
+      debug:
+        msg: "Docker installé : {{ docker_version.stdout }}"
+
+    - name: Vérifier l'installation de Docker Compose
+      command: docker compose version
+      register: compose_version
+      changed_when: false
+
+    - name: Afficher la version de Docker Compose
+      debug:
+        msg: "Docker Compose installé : {{ compose_version.stdout }}"
+
